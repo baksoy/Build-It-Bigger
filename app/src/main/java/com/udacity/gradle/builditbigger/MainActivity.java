@@ -1,19 +1,21 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
+import com.baksoy.jokedisplayer.JokeDisplayActivity;
 import com.baksoy.jokelibrary.JokeModel;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    String mJoke;
-    JokeModel mJokeModel;
+    private String mJoke;
+    private JokeModel mJokeModel;
+    private final String JOKE = "joke";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +50,8 @@ public class MainActivity extends ActionBarActivity {
     public void tellJoke(View view) {
         int i = (int) Math.round(Math.random() * (mJokeModel.getJokeListSize() - 1));
         mJoke = mJokeModel.getJoke(i);
-        Toast.makeText(this, mJoke, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, JokeDisplayActivity.class);
+        intent.putExtra(JOKE, mJoke);
+        startActivity(intent);
     }
-
-
 }
