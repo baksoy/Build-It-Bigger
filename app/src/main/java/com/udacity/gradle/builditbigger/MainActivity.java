@@ -1,6 +1,7 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -49,9 +50,32 @@ public class MainActivity extends ActionBarActivity {
 
     public void tellJoke(View view) {
         int i = (int) Math.round(Math.random() * (mJokeModel.getJokeListSize() - 1));
-        mJoke = mJokeModel.getJoke(i);
-        Intent intent = new Intent(this, JokeDisplayActivity.class);
-        intent.putExtra(JOKE, mJoke);
-        startActivity(intent);
+
+        //Get your jokes from GCE instead of JokeModel
+        //Use AsyncTask to pull your jokes from GCE
+        //then send off your jokes to JokeDisplayActivity via Intent extra
+        GetJokeTask getJokeTask = new GetJokeTask();
+
+        mJoke = mJokeModel.getJoke(i); //remove this after GCE is live
+        getJokeTask.execute(mJoke); //remove mJoke parameter. no need to pass in anything. just call execute
+    }
+
+    public class GetJokeTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPostExecute(String joke) {
+            //super.onPostExecute(s);
+            Intent intent = new Intent(getApplicationContext(), JokeDisplayActivity.class);
+            intent.putExtra(JOKE, joke);
+            startActivity(intent);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // String joke
+            // Get your joke from GCE here and return it below
+            // return joke;
+            return params[0]; //delete this after you return joke in previous line
+        }
     }
 }
