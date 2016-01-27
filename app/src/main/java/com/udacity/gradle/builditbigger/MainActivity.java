@@ -9,22 +9,23 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.baksoy.jokedisplayer.JokeDisplayActivity;
-import com.baksoy.jokelibrary.JokeModel;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+
+import java.io.IOException;
+
+import backend.builditbigger.gradle.udacity.com.jokeApi.JokeApi;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    private String mJoke;
-    private JokeModel mJokeModel;
     private final String JOKE = "joke";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mJokeModel = new JokeModel();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,33 +50,33 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view) {
-        int i = (int) Math.round(Math.random() * (mJokeModel.getJokeListSize() - 1));
-
-        //Get your jokes from GCE instead of JokeModel
-        //Use AsyncTask to pull your jokes from GCE
-        //then send off your jokes to JokeDisplayActivity via Intent extra
         GetJokeTask getJokeTask = new GetJokeTask();
-
-        mJoke = mJokeModel.getJoke(i); //remove this after GCE is live
-        getJokeTask.execute(mJoke); //remove mJoke parameter. no need to pass in anything. just call execute
+        getJokeTask.execute();
     }
 
     public class GetJokeTask extends AsyncTask<String, Void, String> {
 
+        private JokeApi myApiService = null;
+
         @Override
-        protected void onPostExecute(String joke) {
+        protected void onPostExecute(String result) {
             //super.onPostExecute(s);
             Intent intent = new Intent(getApplicationContext(), JokeDisplayActivity.class);
-            intent.putExtra(JOKE, joke);
+            intent.putExtra(JOKE, result);
             startActivity(intent);
         }
 
         @Override
         protected String doInBackground(String... params) {
-            // String joke
-            // Get your joke from GCE here and return it below
-            // return joke;
-            return params[0]; //delete this after you return joke in previous line
+            if (myApiService == null) {  // Only do this once
+                myApiService = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
+                        .setRootUrl("https://demogradle-2016.appspot.com/_ah/api/").build();
+            }
+            try {
+                return myApiService.setJoke().execute().getJoke();
+            } catch (IOException e) {
+                return e.getMessage();
+            }
         }
     }
 }
