@@ -41,34 +41,4 @@ public class MainActivity extends ActionBarActivity {
         new GetJokeTask(this).execute();
     }
 
-//    public class GetJokeTask extends AsyncTask<String, Void, String> {
-//
-//        private JokeApi myApiService = null;
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            //super.onPostExecute(s);
-//
-//            if (result != null) {
-//                Intent intent = new Intent(getApplicationContext(), JokeDisplayActivity.class);
-//                intent.putExtra(JOKE, result);
-//                startActivity(intent);
-//            } else {
-//                Toast.makeText(getApplicationContext(), "Error: Not able to fetch Joke", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            if (myApiService == null) {  // Only do this once
-//                myApiService = new JokeApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), null)
-//                        .setRootUrl("https://demogradle-2016.appspot.com/_ah/api/").build();
-//            }
-//            try {
-//                return myApiService.setJoke().execute().getJoke();
-//            } catch (IOException e) {
-//                return e.getMessage();
-//            }
-//        }
-//    }
 }
