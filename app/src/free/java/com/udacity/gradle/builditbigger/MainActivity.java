@@ -1,10 +1,11 @@
 package com.udacity.gradle.builditbigger;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -12,18 +13,23 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private InterstitialAd mInterstitialAd;
+    private InterstitialAd interstitialAd;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Setup spinner
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
+
         // Create the InterstitialAd and set the adUnitId.
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         requestNewInterstitial();
     }
 
@@ -58,21 +64,21 @@ public class MainActivity extends ActionBarActivity {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("92774660BFB7292960D60CAD36FFD7B4")
                 .build();
-        if (!mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
-            mInterstitialAd.loadAd(adRequest);
+        if (!interstitialAd.isLoading() && !interstitialAd.isLoaded()) {
+            interstitialAd.loadAd(adRequest);
         }
     }
 
     private void showInterstitial() {
         // Show the ad if it's ready. Otherwise toast msg and get joke.
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
+        if (interstitialAd != null && interstitialAd.isLoaded()) {
+            interstitialAd.show();
         } else {
             Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
             getJoke();
         }
 
-        mInterstitialAd.setAdListener(new AdListener() {
+        interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
                 getJoke();
@@ -81,7 +87,16 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    public void getJoke() {
+    private void getJoke() {
+        //Start the spinner and go get a joke
+        spinner.setVisibility(View.VISIBLE);
         new GetJokeTask(this).execute();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Stop the spinner
+        spinner.setVisibility(View.GONE);
     }
 }

@@ -23,6 +23,7 @@ public class NonEmptyStringTest extends AndroidTestCase {
             e.printStackTrace();
         }
         Log.i(LOG_TAG, result);
+        assert result != null;
         assertTrue(!result.isEmpty());
     }
 }

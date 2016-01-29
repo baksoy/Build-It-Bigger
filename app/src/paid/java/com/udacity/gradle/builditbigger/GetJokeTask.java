@@ -16,10 +16,9 @@ import backend.builditbigger.gradle.udacity.com.jokeApi.JokeApi;
 /**
  * Created by beraaksoy on 1/28/16.
  */
-public class GetJokeTask extends AsyncTask<String, Void, String> {
+class GetJokeTask extends AsyncTask<String, Void, String> {
     private JokeApi myApiService = null;
-    private Context context;
-    private final String JOKE = "joke";
+    private final Context context;
 
     public GetJokeTask(Context context) {
         this.context = context;
@@ -29,6 +28,7 @@ public class GetJokeTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         Intent intent = new Intent(context, JokeDisplayActivity.class);
+        String JOKE = "joke";
         intent.putExtra(JOKE, result);
         context.startActivity(intent);
     }

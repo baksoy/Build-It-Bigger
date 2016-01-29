@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class JokeFactory {
 
-    private ArrayList<String> jokeList;
+    private final ArrayList<String> jokeList;
 
     public JokeFactory() {
         jokeList = new ArrayList<>();
