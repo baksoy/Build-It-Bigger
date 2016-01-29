@@ -17,3 +17,32 @@ allprojects {
         jcenter()
     }
 }
+
+
+task startBackend() {
+    dependsOn ':backend:appengineRun'
+}
+task runTest() {
+    dependsOn ':app:check'
+}
+task stopBackend() {
+    dependsOn ':backend:appengineStop'
+}
+
+runTest.mustRunAfter startBackend
+stopBackend.mustRunAfter runTest
+
+task startTest() {
+
+    evaluationDependsOn ":backend"
+
+    project(":backend") {
+        appengine {
+            daemon true
+        }
+    }
+
+    dependsOn startBackend
+    dependsOn runTest
+    dependsOn stopBackend
+}
